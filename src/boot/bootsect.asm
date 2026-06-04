@@ -30,7 +30,7 @@ JMP $   ; We never reach here
 [BITS 16]
 load_kernel:
     MOV bx, KERNEL_OFFSET ; bx -> destination
-    MOV dh, 9             ; dh -> num sectors
+    MOV dh, 20             ; dh -> num sectors
     MOV dl, [BOOT_DRIVE]  ; dl -> disk
     CALL disk_load
     RET

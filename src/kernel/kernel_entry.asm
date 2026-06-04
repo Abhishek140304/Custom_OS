@@ -1,10 +1,10 @@
 [BITS 32]
 
 global _start
-extern main
+extern kernel_main
 
 _start:
-    call main
+    call kernel_main
 
 .hang:
     jmp .hang

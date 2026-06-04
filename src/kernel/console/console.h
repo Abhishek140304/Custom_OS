@@ -1,6 +1,6 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-void printk(char* str);
+void printk(const char* str);
 
 #endif

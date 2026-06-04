@@ -1,6 +1,6 @@
 #include "console.h"
-#include "vga.h"
+#include "../drivers/vga.h"
 
-void printk(char* str){
+void printk(const char* str){
     vga_print_str(str, WHITE_ON_BLACK);
 }
