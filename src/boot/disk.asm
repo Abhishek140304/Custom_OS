@@ -1,3 +1,8 @@
+; Description: A 16-bit routine that uses BIOS Interrupt 0x13 to read data from the hard
+; drive into memory.
+;
+; ----------------------------------------------------------------------------------------
+
 [BITS 16]
 
 ; Loads 'dh' sectors to ES:BX from drive 'dl'
@@ -7,8 +12,7 @@ disk_load:
 
     MOV ah, 0x02 ; read mode
     MOV al, dh   ; read dh number of sectors
-    MOV cl, 0x02 ; start from sector 2
-                 ; (as sector 1 is our boot sector)
+    MOV cl, 0x02 ; start from sector 2 (as sector 1 is our boot sector)
     MOV ch, 0x00 ; cylinder 0
     MOV dh, 0x00 ; head 0
 
@@ -19,7 +23,8 @@ disk_load:
     JC disk_error ; Jump if the Carry Flag is set (BIOS sets this on error)
 
     POP dx     ; get back original number of sectors to read
-    CMP al, dh ; BIOS sets 'al' to the # of sectors actually read compare it to 'dh' and error out if they are not equal
+    CMP al, dh ; BIOS sets 'al' to the # of sectors actually read compare it to 'dh' and   
+               ; error out if they are not equal
     JNE sectors_error
     POPA
     RET

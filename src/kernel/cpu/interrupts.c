@@ -1,3 +1,7 @@
+/*
+Description: The master dispatcher for CPU exceptions. When an exception occurs, the CPU jumps here with a full snapshot of the registers. We use that data to identify and print the error type.
+*/
+
 #include "interrupts.h"
 #include "../console/console.h"
 

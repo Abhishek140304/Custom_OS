@@ -1,6 +1,11 @@
+/*
+Description: Allocates the physical memory for the IDT, formats the handler memory addresses to fit Intel's legacy structures, and loads the table into the CPU.
+*/
+
 #include "idt.h"
 #include "isr.h"
 
+// The x86 architecture physically supports exactly 256 hardware interrupts.
 #define IDT_ENTRIES 256
 
 idt_entry_t idt[IDT_ENTRIES];
@@ -8,6 +13,7 @@ idt_ptr_t idt_ptr;
 
 extern void idt_load(unsigned int);
 
+// takes a standard 32-bit C memory address, chops it in half, and formats it into the 8-byte structure required by the x86 CPU hardware.
 static void idt_set_gate(unsigned char num, unsigned int base, unsigned short selector, unsigned char flags){
     idt[num].base_low = base & 0xFFFF;
     idt[num].selector = selector;

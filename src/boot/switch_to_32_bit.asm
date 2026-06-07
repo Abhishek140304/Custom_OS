@@ -1,3 +1,10 @@
+; Description: This routine safely transitions the CPU from 16-bit Real Mode into 32-bit 
+; Protected Mode. It disables interrupts, loads the Global Descriptor Table (GDT), flips 
+; the hardware switch in cr0, flushes the CPU pipeline, and sets up a new 32-bit 
+; environment.
+;
+; ----------------------------------------------------------------------------------------
+
 [BITS 16]
 switch_to_32bit:
     CLI                     ; 1. disable interrupts

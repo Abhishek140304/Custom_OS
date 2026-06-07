@@ -1,3 +1,8 @@
+/*
+Description: The main C entry point for the operating system. It initializes core hardware drivers, sets up the Interrupt Descriptor Table (IDT), and safely halts the CPU into an infinite loop to keep the OS running.
+*/
+
+
 # include "./drivers/vga.h"
 #include "./console/console.h"
 #include "./cpu/idt.h"

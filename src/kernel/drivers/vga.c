@@ -1,9 +1,14 @@
+/*
+Description: The implementation of our bare-metal VGA text driver.It handles mapping 2D screen coordinates (Row/Col) to the 1D physical video memory array, printing characters, and clearing the screen.
+*/
+
 #include "vga.h"
 
 // Keep track of where the next character should be printed
 int cursor_row = 0;
 int cursor_col = 0;
 
+// Fills the entire 80x25 screen with blank spaces.
 void vga_clear_screen(){
     char* memory = (char*) VGA_ADDRESS;
 

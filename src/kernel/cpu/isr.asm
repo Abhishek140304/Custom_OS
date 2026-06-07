@@ -1,13 +1,23 @@
-[BITS 32]
+; Description: Assembly wrappers for CPU Interrupt Service Routines. This file 
+; standardizes the stack state for different types of exceptions before calling the 
+; C-based 'isr_handler'.
+;
+;----------------------------------------------------------------------------------
 
+
+[BITS 32]
 extern isr_handler
 
-; macro for exceptions without error code
+; 1. The Macros: Standardizing the Stack
+; Intel architecture is messy: some exceptions push an error code to the stack 
+; automatically, and some do not. We use these macros to ensure that by the time we hit 
+; 'isr_common', the stack looks exactly the same.
 
+
+; macro with exceptions without error code
 %macro ISR_NOERR 1
 
 global isr%1
-
 isr%1:
     cli 
     push dword 0
@@ -23,7 +33,6 @@ isr%1:
 %macro ISR_ERR 1
 
 global isr%1
-
 isr%1:
     cli
     push dword %1
@@ -37,22 +46,23 @@ isr%1:
 ; common handler
 isr_common:
     pushad
-    mov ax, ds  ; save segments
+    mov ax, ds      ; save segments
     push eax
 
-    mov ax, 0x10    ; load kernel segments
+    mov ax, 0x10    ; load kernel data segment (GDT index 0x10)
     mov ds, ax
     mov es, ax
     mov fs, ax
     mov gs, ax
 
-    push esp
+    push esp        ; Push the stack pointer: THIS IS THE ARGUMENT to isr_handler! It lets 
+                    ; the C code see the entire CPU snapshot.
 
     call isr_handler
 
-    add esp, 4  ; remove parameter
+    add esp, 4      ; remove parameter
 
-    pop eax ; restore segments
+    pop eax         ; restore segments
 
     mov ds, ax
     mov es, ax
@@ -61,9 +71,9 @@ isr_common:
 
     popad
 
-    add esp, 8  ; remove interrupt number and error code
+    add esp, 8      ; remove interrupt number and error code
 
-    sti 
+    sti             ; Re-enable interrupts
     iret
 
 

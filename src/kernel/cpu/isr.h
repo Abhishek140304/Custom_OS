@@ -1,3 +1,7 @@
+/*
+Description: Declares the entry points for the CPU's built-in exception handlers. These functions will be written in Assembly but need to be referenced in C code to populate the IDT.
+*/
+
 #ifndef ISR_H
 #define ISR_H
 

@@ -1,3 +1,7 @@
+/*
+Description: Defines the constants, screen dimensions, color codes, and function prototypes for the bare-metal VGA text mode driver.
+*/
+
 #ifndef VGA_H
 #define VGA_H
 
