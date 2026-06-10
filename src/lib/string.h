@@ -3,4 +3,6 @@
 
 int strlen(const char* str);
 
+void int_to_hex(unsigned int num, char* str);
+
 #endif

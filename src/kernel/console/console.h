@@ -7,4 +7,6 @@ Description: Defines the high-level console interface for the kernel. This layer
 
 void printk(const char* str);
 
+void printk_hex(unsigned int num);
+
 #endif

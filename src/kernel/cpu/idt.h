@@ -37,4 +37,6 @@ typedef struct{
 // Initializes the 256 IDT entries and loads them into the CPU.
 void idt_init();
 
+void idt_set_gate(unsigned char num, unsigned int base, unsigned short selector, unsigned char flags);
+
 #endif
