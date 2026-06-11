@@ -5,31 +5,35 @@ Description: The main C entry point for the operating system. It initializes cor
 
 # include "./drivers/vga.h"
 #include "./console/console.h"
-#include "./cpu/idt.h"
-#include "./cpu/hardware_exceptions/pic.h"
-#include "./cpu/hardware_exceptions/irq.h"
+#include "./cpu/idt/idt.h"
+#include "./cpu/irq/pic.h"
+#include "./cpu/irq/irq.h"
+#include "./drivers/keyboard.h"
+#include "./drivers/timer.h"
 
 void kernel_main() {
-    // clear the screen
+
     vga_clear_screen();
 
-    printk("Initialising IDT...\n");
+    printk("Initializing IDT...\n");
     idt_init();
 
-    printk("Remappint PIC...\n");
+    printk("Remapping PIC...\n");
     pic_remap();
-    
-    printk("Installing IRQ...\n");
+
+    printk("Installing IRQs...\n");
     irq_init();
 
-    // volatile int x = 0;
-    // volatile int y = 10 / x;
-    // __asm__ volatile("int $8");
+    printk("Initializing Timer...\n");
+    timer_init();
+
+    printk("Initializing Keyboard...\n");
+    keyboard_init();
 
     printk("Enabling Interrupts...\n");
     __asm__ volatile("sti");
 
-    printk("Interrupt Enabled!\n");
+    printk("Interrupts Enabled!\n");
 
     while(1);
 }

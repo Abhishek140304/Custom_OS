@@ -1,15 +1,12 @@
 #include "timer.h"
-#include "../console/console.h"
+#include "../cpu/interrupt_manager/interrupt_manager.h"
 
 unsigned int tick = 0;
 
-void timer_callback(){
+static void timer_callback(registers_t* regs){
     tick++;
-
-    printk_hex(tick);
-    printk("Tick\n");
 }
 
 void timer_init(){
-
+    register_interrupt_handler(32, timer_callback);
 }

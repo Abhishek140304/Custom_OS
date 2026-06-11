@@ -15,3 +15,7 @@ void printk_hex(unsigned int num){
     int_to_hex(num, buffer);
     printk(buffer);
 }
+
+void printk_char(char c){
+    vga_print_char(c, WHITE_ON_BLACK);
+}

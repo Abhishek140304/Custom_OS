@@ -3,7 +3,8 @@ Description: The master dispatcher for CPU exceptions. When an exception occurs,
 */
 
 #include "interrupts.h"
-#include "../console/console.h"
+#include "../../console/console.h"
+#include "../interrupt_manager/interrupt_manager.h"
 
 const char* exception_messages[] = {
     "Division By Zero",                   // 0
@@ -53,21 +54,9 @@ void isr_handler(registers_t* regs){
     }
     printk("\n");
 
-    printk("EIP: ");
-    printk_hex(regs->eip);
-    printk("\n");
-
-    printk("CS: ");
-    printk_hex(regs->cs);
-    printk("\n");
-
-    printk("EFLAGS: ");
-    printk_hex(regs->eflags);
-    printk("\n");
-
-    printk("ERROR CODE: ");
-    printk_hex(regs->err_code);
-    printk("\n");
+    if(interrupt_handlers[regs->int_no]){
+        interrupt_handlers[regs->int_no](regs);
+    }
 
 
     while(1);

@@ -11,8 +11,11 @@ LIB_DIR = src/lib
 DRIVER_DIR = $(KERNEL_DIR)/drivers
 CONSOLE_DIR = $(KERNEL_DIR)/console
 CPU_DIR = $(KERNEL_DIR)/cpu
-CPU_EXCEPTION_DIR = $(CPU_DIR)/cpu_exceptions
-HARDWARE_EXCEPTION_DIR = $(CPU_DIR)/hardware_exceptions
+EXCEPTIONS_DIR = $(CPU_DIR)/exceptions
+IDT_DIR = $(CPU_DIR)/idt
+INTERRUPT_MANAGER_DIR = $(CPU_DIR)/interrupt_manager
+IO_DIR = $(CPU_DIR)/io
+IRQ_DIR = $(CPU_DIR)/irq
 
 
 # Build Directories
@@ -23,19 +26,21 @@ BUILD_LIB = $(BUILD_DIR)/lib
 
 # Object files
 OBJS = \
-	$(BUILD_KERNEL)/kernel_entry.o \
+	$(BUILD_KERNEL)/kernel_entry_asm.o \
 	$(BUILD_KERNEL)/kernel.o \
 	$(BUILD_KERNEL)/vga.o \
 	$(BUILD_KERNEL)/timer.o \
+	$(BUILD_KERNEL)/keyboard.o \
 	$(BUILD_KERNEL)/console.o \
-	$(BUILD_KERNEL)/idt.o \
-	$(BUILD_KERNEL)/idt_load.o \
-	$(BUILD_KERNEL)/isr.o \
 	$(BUILD_KERNEL)/interrupts.o \
-	$(BUILD_KERNEL)/irq.o \
-	$(BUILD_KERNEL)/irq_asm.o \
-	$(BUILD_KERNEL)/pic.o \
+	$(BUILD_KERNEL)/isr_asm.o \
+	$(BUILD_KERNEL)/idt_load_asm.o \
+	$(BUILD_KERNEL)/idt.o \
+	$(BUILD_KERNEL)/interrupt_manager.o \
 	$(BUILD_KERNEL)/ports.o \
+	$(BUILD_KERNEL)/irq_asm.o \
+	$(BUILD_KERNEL)/irq.o \
+	$(BUILD_KERNEL)/pic.o \
 	$(BUILD_LIB)/string.o
 
 # The default target
@@ -48,11 +53,13 @@ dirs:
 	mkdir -p $(BUILD_KERNEL)
 	mkdir -p $(BUILD_LIB)
 
+
+
 # Source Compilation
 $(BUILD_DIR)/bootsect.bin: $(BOOT_DIR)/bootsect.asm | dirs
 	nasm -f bin $< -o $@
 
-$(BUILD_KERNEL)/kernel_entry.o: $(KERNEL_DIR)/kernel_entry.asm | dirs
+$(BUILD_KERNEL)/kernel_entry_asm.o: $(KERNEL_DIR)/kernel_entry.asm | dirs
 	nasm -f elf $< -o $@
 
 $(BUILD_KERNEL)/kernel.o: $(KERNEL_DIR)/kernel.c | dirs
@@ -64,31 +71,37 @@ $(BUILD_KERNEL)/vga.o: $(DRIVER_DIR)/vga.c | dirs
 $(BUILD_KERNEL)/timer.o: $(DRIVER_DIR)/timer.c | dirs
 	$(CC) $(CFLAGS) $< -o $@
 
+$(BUILD_KERNEL)/keyboard.o: $(DRIVER_DIR)/keyboard.c | dirs
+	$(CC) $(CFLAGS) $< -o $@
+
 $(BUILD_KERNEL)/console.o: $(CONSOLE_DIR)/console.c | dirs
 	$(CC) $(CFLAGS) $< -o $@
 
-$(BUILD_KERNEL)/idt.o: $(CPU_DIR)/idt.c | dirs
+$(BUILD_KERNEL)/interrupts.o: $(EXCEPTIONS_DIR)/interrupts.c | dirs
 	$(CC) $(CFLAGS) $< -o $@
 
-$(BUILD_KERNEL)/idt_load.o: $(CPU_EXCEPTION_DIR)/idt_load.asm | dirs
+$(BUILD_KERNEL)/isr_asm.o: $(EXCEPTIONS_DIR)/isr.asm | dirs
 	nasm -f elf $< -o $@
 
-$(BUILD_KERNEL)/isr.o: $(CPU_EXCEPTION_DIR)/isr.asm | dirs
+$(BUILD_KERNEL)/idt_load_asm.o: $(IDT_DIR)/idt_load.asm | dirs
 	nasm -f elf $< -o $@
 
-$(BUILD_KERNEL)/interrupts.o: $(CPU_DIR)/interrupts.c | dirs
+$(BUILD_KERNEL)/idt.o: $(IDT_DIR)/idt.c | dirs
 	$(CC) $(CFLAGS) $< -o $@
 
-$(BUILD_KERNEL)/irq_asm.o: $(HARDWARE_EXCEPTION_DIR)/irq_asm.asm | dirs
+$(BUILD_KERNEL)/interrupt_manager.o: $(INTERRUPT_MANAGER_DIR)/interrupt_manager.c | dirs
+	$(CC) $(CFLAGS) $< -o $@
+
+$(BUILD_KERNEL)/ports.o: $(IO_DIR)/ports.c | dirs
+	$(CC) $(CFLAGS) $< -o $@
+
+$(BUILD_KERNEL)/irq_asm.o: $(IRQ_DIR)/irq.asm | dirs
 	nasm -f elf $< -o $@
 
-$(BUILD_KERNEL)/irq.o: $(HARDWARE_EXCEPTION_DIR)/irq.c | dirs
+$(BUILD_KERNEL)/irq.o: $(IRQ_DIR)/irq.c | dirs
 	$(CC) $(CFLAGS) $< -o $@
 
-$(BUILD_KERNEL)/pic.o: $(HARDWARE_EXCEPTION_DIR)/pic.c | dirs
-	$(CC) $(CFLAGS) $< -o $@
-
-$(BUILD_KERNEL)/ports.o: $(HARDWARE_EXCEPTION_DIR)/ports.c | dirs
+$(BUILD_KERNEL)/pic.o: $(IRQ_DIR)/pic.c | dirs
 	$(CC) $(CFLAGS) $< -o $@
 
 $(BUILD_LIB)/string.o: $(LIB_DIR)/string.c | dirs

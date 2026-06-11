@@ -9,4 +9,6 @@ void printk(const char* str);
 
 void printk_hex(unsigned int num);
 
+void printk_char(char c);
+
 #endif

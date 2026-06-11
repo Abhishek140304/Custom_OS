@@ -20,5 +20,7 @@ Description: Defines the constants, screen dimensions, color codes, and function
 // functions
 void vga_clear_screen();
 void vga_print_str(const char* str, int color);
+void vga_print_char(char c, int color);
+void vga_backspace();
 
 #endif

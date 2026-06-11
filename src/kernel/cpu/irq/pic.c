@@ -4,7 +4,7 @@ Description: Remaps the Intel 8259 Programmable Interrupt Controllers (PICs) so 
 
 
 #include "pic.h"
-#include "ports.h"
+#include "../io/ports.h"
 
 void pic_remap(){
     // 1. Save Existing Masks

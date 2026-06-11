@@ -1,7 +1,7 @@
 #ifndef IRQ_H
 #define IRQ_H
 
-#include "../interrupts.h"
+#include "../exceptions/interrupts.h"
 
 void irq_init();
 

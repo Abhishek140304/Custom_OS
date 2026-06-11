@@ -47,3 +47,20 @@ void vga_print_str(const char* str, int color){
         vga_print_char(str[i], color);
     }
 }
+
+void vga_backspace(){
+    if(cursor_col == 0 && cursor_row == 0) return;
+
+    if(cursor_col > 0) cursor_col--;
+    else{
+        cursor_row--;
+        cursor_col = VGA_COLS-1;
+    }
+
+    int offset = (cursor_row * VGA_COLS + cursor_col) * 2;
+
+    char* memory = (char*)VGA_ADDRESS;
+
+    memory[offset] = ' ';
+    memory[offset+1] = WHITE_ON_BLACK;
+}
