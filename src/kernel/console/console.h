@@ -11,4 +11,6 @@ void printk_hex(unsigned int num);
 
 void printk_char(char c);
 
+void printk_dec(unsigned int n);
+
 #endif

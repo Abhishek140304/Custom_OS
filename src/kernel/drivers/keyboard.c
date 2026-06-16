@@ -66,8 +66,14 @@ static char shift_map[128] = {
 };
 
 static void buffer_put(char c){
+    int next = (buffer_head + 1) % BUFFER_SIZE;
+
+    if(next == buffer_tail){
+        return;     // buffer full
+    }
+
     keyboard_buffer[buffer_head] = c;
-    buffer_head = (buffer_head + 1) % BUFFER_SIZE;
+    buffer_head = next;
 }
 
 static void buffer_pop(){
@@ -84,6 +90,30 @@ char keyboard_get_char(){
     buffer_tail = (buffer_tail + 1) % BUFFER_SIZE;
 
     return c;
+}
+
+void keyboard_readline(char* buffer, int max_len){
+    int i = 0;
+
+    while(1){
+        char c = keyboard_get_char();
+
+        if(c == 0) continue;
+
+        if(c == '\n'){
+            buffer[i] = '\0';
+            return;
+        }
+
+        if(c == '\b'){
+            if(i > 0) i--;
+            continue;
+        }
+
+        if(i < max_len - 1){
+            buffer[i++] = c;
+        }
+    }
 }
 
 // This function is triggered by the PIC every time a key is pressed OR released.
@@ -119,7 +149,7 @@ static void keyboard_callback(registers_t* regs){
 
     if(c == '\b'){
         vga_backspace();
-        buffer_pop();
+        buffer_put('\b');
         return;
     }
 

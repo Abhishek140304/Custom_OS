@@ -21,12 +21,38 @@ void vga_clear_screen(){
     cursor_row = 0;
 }
 
+static void vga_scroll(){
+    char* memory = (char*)VGA_ADDRESS;
+
+    for(int row=1; row<VGA_ROWS; row++){
+        for(int col=0; col<VGA_COLS; col++){
+            int curr = (row * VGA_COLS + col) * 2;
+            int prev = ((row-1) * VGA_COLS + col) * 2;
+
+            memory[prev] = memory[curr];
+            memory[prev+1] = memory[curr+1];
+        }
+    }
+
+    for(int col=0; col<VGA_COLS; col++){
+        int offset = ((VGA_ROWS - 1) * VGA_COLS + col) * 2;
+
+        memory[offset] = ' ';
+        memory[offset + 1] = WHITE_ON_BLACK;
+    }
+
+    cursor_row = VGA_ROWS - 1;
+}
+
 void vga_print_char(char c, int color){
     char* memory = (char*) VGA_ADDRESS;
 
     if(c == '\n'){
         cursor_row++;
         cursor_col = 0;
+        if(cursor_row >= VGA_ROWS){
+            vga_scroll();
+        }
         return;
     }
 
@@ -39,6 +65,9 @@ void vga_print_char(char c, int color){
     if(cursor_col >= VGA_COLS){
         cursor_row++;
         cursor_col = 0;
+        if(cursor_row >= VGA_ROWS){
+            vga_scroll();
+        }
     }
 }
 

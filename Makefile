@@ -16,6 +16,7 @@ IDT_DIR = $(CPU_DIR)/idt
 INTERRUPT_MANAGER_DIR = $(CPU_DIR)/interrupt_manager
 IO_DIR = $(CPU_DIR)/io
 IRQ_DIR = $(CPU_DIR)/irq
+SHELL_DIR = $(KERNEL_DIR)/shell
 
 
 # Build Directories
@@ -41,6 +42,8 @@ OBJS = \
 	$(BUILD_KERNEL)/irq_asm.o \
 	$(BUILD_KERNEL)/irq.o \
 	$(BUILD_KERNEL)/pic.o \
+	$(BUILD_KERNEL)/shell.o \
+	$(BUILD_KERNEL)/commands.o \
 	$(BUILD_LIB)/string.o
 
 # The default target
@@ -102,6 +105,12 @@ $(BUILD_KERNEL)/irq.o: $(IRQ_DIR)/irq.c | dirs
 	$(CC) $(CFLAGS) $< -o $@
 
 $(BUILD_KERNEL)/pic.o: $(IRQ_DIR)/pic.c | dirs
+	$(CC) $(CFLAGS) $< -o $@
+
+$(BUILD_KERNEL)/shell.o: $(SHELL_DIR)/shell.c | dirs
+	$(CC) $(CFLAGS) $< -o $@
+
+$(BUILD_KERNEL)/commands.o: $(SHELL_DIR)/commands.c | dirs
 	$(CC) $(CFLAGS) $< -o $@
 
 $(BUILD_LIB)/string.o: $(LIB_DIR)/string.c | dirs

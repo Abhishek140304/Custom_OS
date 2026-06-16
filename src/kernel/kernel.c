@@ -10,30 +10,30 @@ Description: The main C entry point for the operating system. It initializes cor
 #include "./cpu/irq/irq.h"
 #include "./drivers/keyboard.h"
 #include "./drivers/timer.h"
+#include "./shell/shell.h"
 
 void kernel_main() {
 
     vga_clear_screen();
 
-    printk("Initializing IDT...\n");
+    // printk("Initializing IDT...\n");
     idt_init();
 
-    printk("Remapping PIC...\n");
+    // printk("Remapping PIC...\n");
     pic_remap();
 
-    printk("Installing IRQs...\n");
+    // printk("Installing IRQs...\n");
     irq_init();
 
-    printk("Initializing Timer...\n");
+    // printk("Initializing Timer...\n");
     timer_init();
 
-    printk("Initializing Keyboard...\n");
+    // printk("Initializing Keyboard...\n");
     keyboard_init();
 
-    printk("Enabling Interrupts...\n");
+    // printk("Enabling Interrupts...\n");
     __asm__ volatile("sti");
 
-    printk("Interrupts Enabled!\n");
-
-    while(1);
+    printk("Welcome to MyOs...\n");
+    shell_start();
 }

@@ -19,3 +19,21 @@ void printk_hex(unsigned int num){
 void printk_char(char c){
     vga_print_char(c, WHITE_ON_BLACK);
 }
+
+void printk_dec(unsigned int n){
+    if(n == 0){
+        printk_char('0');
+        return;
+    }
+
+    char digits[16];
+    int i = 0;
+    while(n > 0){
+        digits[i++] = (n % 10) + '0';
+        n /= 10;
+    }
+
+    while(i > 0){
+        printk_char(digits[--i]);
+    }
+}
