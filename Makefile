@@ -2,7 +2,7 @@
 CC = gcc
 CFLAGS = -m32 -ffreestanding -fno-pie -c
 LD = ld
-LDFLAGS = -m elf_i386 -Ttext 0x1000 --oformat binary
+LDFLAGS = -m elf_i386 -T linker.ld --oformat binary
 
 # Source Directories
 BOOT_DIR = src/boot
@@ -17,6 +17,7 @@ INTERRUPT_MANAGER_DIR = $(CPU_DIR)/interrupt_manager
 IO_DIR = $(CPU_DIR)/io
 IRQ_DIR = $(CPU_DIR)/irq
 SHELL_DIR = $(KERNEL_DIR)/shell
+MEMORY_DIR = $(KERNEL_DIR)/memory
 
 
 # Build Directories
@@ -44,6 +45,8 @@ OBJS = \
 	$(BUILD_KERNEL)/pic.o \
 	$(BUILD_KERNEL)/shell.o \
 	$(BUILD_KERNEL)/commands.o \
+	$(BUILD_KERNEL)/memory_info.o \
+	$(BUILD_KERNEL)/e280.o \
 	$(BUILD_LIB)/string.o
 
 # The default target
@@ -111,6 +114,12 @@ $(BUILD_KERNEL)/shell.o: $(SHELL_DIR)/shell.c | dirs
 	$(CC) $(CFLAGS) $< -o $@
 
 $(BUILD_KERNEL)/commands.o: $(SHELL_DIR)/commands.c | dirs
+	$(CC) $(CFLAGS) $< -o $@
+
+$(BUILD_KERNEL)/memory_info.o: $(MEMORY_DIR)/memory_info.c | dirs
+	$(CC) $(CFLAGS) $< -o $@
+
+$(BUILD_KERNEL)/e280.o: $(MEMORY_DIR)/e280.c | dirs
 	$(CC) $(CFLAGS) $< -o $@
 
 $(BUILD_LIB)/string.o: $(LIB_DIR)/string.c | dirs

@@ -8,6 +8,8 @@ Description: The application layer of the OS. Contains the array of registered s
 #include "../drivers/timer.h"
 #include "../cpu/io/ports.h"
 #include "../../lib/string.h"
+#include "../memory/memory_info.h"
+#include "../memory/e280.h"
 
 command_t commands[] = {
     {"help", help_command},
@@ -18,7 +20,10 @@ command_t commands[] = {
     {"uptime", uptime_command},
     {"echo", echo_command},
     {"reboot", reboot_command},
-    {"wait", wait_command}
+    {"wait", wait_command},
+    {"meminfo", meminfo_command},
+    {"memmap", memmap_command},
+    {"raminfo", raminfo_command}
 };
 
 const int command_count = sizeof(commands) / sizeof(command_t);
@@ -87,4 +92,25 @@ void wait_command(char* args){
     sleep(3000);
 
     printk("Done!\n");
+}
+
+void meminfo_command(char* args){
+    memory_info_print();
+}
+
+void memmap_command(char* args){
+    e820_print_map();
+}
+
+void raminfo_command(char* args){
+    printk("\nUsable RAM: ");
+    printk_hex(e820_total_usable_ram());
+
+    printk("\nReserved RAM: ");
+    printk_hex(e820_total_reserved_ram());
+
+    printk("\nLargest RAM: ");
+    printk_hex(e820_largest_usable_region());
+
+    printk("\n");
 }

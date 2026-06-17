@@ -18,6 +18,9 @@ void uptime_command(char* args);
 void echo_command(char* args);
 void reboot_command(char* args);
 void wait_command(char* args);
+void meminfo_command(char* args);
+void memmap_command(char* args);
+void raminfo_command(char* args);
 
 extern command_t commands[];
 extern const int command_count;

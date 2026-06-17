@@ -1,6 +1,7 @@
-; Description: This is the primary 16-bit boot sector code. Its role is to initialize
-; basic CPU segments, set up a stack, load the compiled C kernel from the disk into memory
-; (at 0x1000), and transition the CPU from 16-bit Real Mode into 32-bit Protected Mode.
+; Description: This is the primary 16-bit boot sector code. Its role is to 
+; initialize basic CPU segments, set up a stack, load the compiled C kernel 
+; from the disk into memory, capture the system memory map, and transition the 
+; CPU from 16-bit Real Mode to 32-bit Protected Mode.
 ;
 ; Complete Workflow:
 ; Step 1: BIOS loads bootloader:
@@ -25,10 +26,13 @@
 ;
 ; ----------------------------------------------------------------------------------------
 
-[BITS 16]
+[BITS 16]   ; 16-bit "Real Mode"
 [ORG 0x7c00]
 
 KERNEL_OFFSET equ 0x1000 ; The memory address where we will load the Kernel
+
+MEMORY_MAP    equ 0x5000    ; place in RAM to store the memory map we get from the BIOS
+MEMORY_COUNT  equ 0x4FF0
 
 ; Initialize segment registers
 XOR ax, ax
@@ -44,9 +48,9 @@ MOV [BOOT_DRIVE], dl
 MOV bp, 0x9000
 MOV sp, bp
 
-; Load the kernel and switch to 32-bit protected mode
-CALL load_kernel
-CALL switch_to_32bit
+CALL load_kernel      ; Read the disk to put the C code at 0x1000
+CALL detect_memory    ; Ask the BIOS exactly how much RAM the system has
+CALL switch_to_32bit  ; Flip the CPU bit to enter Protected Mode!
 
 JMP $   ; We never reach here
 
@@ -57,10 +61,42 @@ JMP $   ; We never reach here
 [BITS 16]
 load_kernel:
     MOV bx, KERNEL_OFFSET ; bx -> destination
-    MOV dh, 30            ; dh -> num sectors
+    MOV dh, 35            ; dh -> num sectors
     MOV dl, [BOOT_DRIVE]  ; dl -> disk
     CALL disk_load
     RET
+
+
+[BITS 16]
+detect_memory:
+    mov di, MEMORY_MAP          ; Destination index: Where to write the array
+    mov word [MEMORY_COUNT], 0
+    xor ebx, ebx                ; EBX must be 0 to start the BIOS map loop
+    
+.e820_loop:
+    mov eax, 0xE820             ; The BIOS function code for "Get Memory Map"
+    mov edx, 0x534D4150         ; "SMAP" in ASCII. The BIOS requires this signature!    
+    mov ecx, 24                 ; Request a 24-byte entry
+
+    int 0x15                    ; BIOS Interrupt
+
+    jc e820_failed
+
+    cmp eax, 0x534D4150         ; The BIOS should return "SMAP" in EAX to confirm success.
+    jne e820_failed
+
+    inc word [MEMORY_COUNT]
+
+    add di, 24
+
+    test ebx, ebx
+    jnz .e820_loop
+
+    RET
+
+e820_failed:
+    jmp $
+
 
 [BITS 32]
 BEGIN_32BIT:
