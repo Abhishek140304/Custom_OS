@@ -46,7 +46,7 @@ OBJS = \
 	$(BUILD_KERNEL)/shell.o \
 	$(BUILD_KERNEL)/commands.o \
 	$(BUILD_KERNEL)/memory_info.o \
-	$(BUILD_KERNEL)/e280.o \
+	$(BUILD_KERNEL)/e820.o \
 	$(BUILD_KERNEL)/pmm.o \
 	$(BUILD_KERNEL)/heap.o \
 	$(BUILD_LIB)/string.o
@@ -121,7 +121,7 @@ $(BUILD_KERNEL)/commands.o: $(SHELL_DIR)/commands.c | dirs
 $(BUILD_KERNEL)/memory_info.o: $(MEMORY_DIR)/memory_info.c | dirs
 	$(CC) $(CFLAGS) $< -o $@
 
-$(BUILD_KERNEL)/e280.o: $(MEMORY_DIR)/e280.c | dirs
+$(BUILD_KERNEL)/e820.o: $(MEMORY_DIR)/e820.c | dirs
 	$(CC) $(CFLAGS) $< -o $@
 
 $(BUILD_KERNEL)/pmm.o: $(MEMORY_DIR)/pmm.c | dirs

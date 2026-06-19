@@ -35,5 +35,7 @@ void memory_info_print(){
     unsigned int heap_start = get_heap_start();
     printk("\nHeap Start : ");
     printk_hex(heap_start);
+    printk("\nHeap End : ");
+    printk_hex(get_heap_end());
     printk("\n");
 }

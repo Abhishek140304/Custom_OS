@@ -1,8 +1,7 @@
 #ifndef PMM_H
 #define PMM_H
 
-#define PMM_BITMAP ((unsigned char*)0x100000)
-
+// The x86 architecture standard for a memory page is exactly 4096 bytes (4KB).
 #define PAGE_SIZE 4096
 
 unsigned int pmm_bitmap_start();

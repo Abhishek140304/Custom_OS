@@ -9,7 +9,7 @@ Description: The application layer of the OS. Contains the array of registered s
 #include "../cpu/io/ports.h"
 #include "../../lib/string.h"
 #include "../memory/memory_info.h"
-#include "../memory/e280.h"
+#include "../memory/e820.h"
 
 command_t commands[] = {
     {"help", help_command},

@@ -2,8 +2,8 @@
 Defines the structure for the BIOS E820 memory map. This allows our C kernel to safely read the raw array of memory chunks dumped by the bootloader at physical address 0x5000.
 */
 
-#ifndef E280_H
-#define E280_H
+#ifndef E820_H
+#define E820_H
 
 #define MEMORY_COUNT_ADDR 0x7FF0
 #define MEMORY_MAP_ADDR 0x8000
