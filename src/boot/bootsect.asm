@@ -31,6 +31,8 @@
 
 KERNEL_OFFSET equ 0x1000 ; The memory address where we will load the Kernel
 
+%define KERNEL_SECTORS 35   ; Number of sectors to load for kernel
+
 MEMORY_MAP    equ 0x8000    ; place in RAM to store the memory map we get from the BIOS
 MEMORY_COUNT  equ 0x7FF0
 
@@ -60,9 +62,9 @@ JMP $   ; We never reach here
 
 [BITS 16]
 load_kernel:
-    MOV bx, KERNEL_OFFSET ; bx -> destination
-    MOV dh, 35            ; dh -> num sectors
-    MOV dl, [BOOT_DRIVE]  ; dl -> disk
+    MOV bx, KERNEL_OFFSET   ; bx -> destination
+    MOV dh, KERNEL_SECTORS  ; dh -> num sectors
+    MOV dl, [BOOT_DRIVE]    ; dl -> disk
     CALL disk_load
     RET
 
@@ -100,7 +102,21 @@ e820_failed:
 
 [BITS 32]
 BEGIN_32BIT:
-    CALL KERNEL_OFFSET ; Jump to the address where we loaded our C code (0x1000)
+    ; 1. Copy the kernel from low memory (0x1000) to high memory (1 MB)
+    mov esi, KERNEL_OFFSET      ; Source: 0x1000 (where the BIOS dumped it)
+    mov edi, 0x100000           ; Destination: 1 MB mark
+
+    ; Calculate how many DWORDs (4 bytes) to copy
+    ; Since 1 sector is 512 bytes, and 1 DWORD is 4 bytes, there are exactly 128 DWORDs per sector.
+    mov ecx, KERNEL_SECTORS * 128   ; Number of DWORDs to copy
+    
+    rep movsd                   ; Fast assembly instruction to copy ECX DWORDs from ESI to EDI
+
+    ; 2. Execute the kernel
+    CALL 0x100000               ; Jump to the new 1 MB location!
+
+    jmp $                       ; Infinite loop safety net
+
 
 ; boot drive variable
 BOOT_DRIVE DB 0
