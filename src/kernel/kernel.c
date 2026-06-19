@@ -11,6 +11,7 @@ Description: The main C entry point for the operating system. It initializes cor
 #include "./drivers/keyboard.h"
 #include "./drivers/timer.h"
 #include "./shell/shell.h"
+#include "./memory/pmm.h"
 
 void kernel_main() {
 
@@ -30,6 +31,9 @@ void kernel_main() {
 
     // printk("Initializing Keyboard...\n");
     keyboard_init();
+
+    // printk("Initializing Physical Memory Map");
+    pmm_init();
 
     // printk("Enabling Interrupts...\n");
     __asm__ volatile("sti");

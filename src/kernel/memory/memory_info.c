@@ -3,6 +3,7 @@ Calculates and prints the physical memory footprint of the kernel. It uses symbo
 */
 
 #include "memory_info.h"
+#include "pmm.h"
 #include "../console/console.h"
 
 extern char kernel_start;
@@ -21,13 +22,22 @@ void memory_info_print(){
     printk_hex(end);
 
     printk("\nKernel Size  : ");
-
     unsigned int size = end - start;
     printk_hex(size);
     printk(" bytes\n");
 
-    unsigned int heap_start = (end + 0xFFF) & 0xFFFFF000;
-    printk("\nSuggested Heap Start : ");
+    printk("\nPMM Start : ");
+    printk_hex(pmm_bitmap_start());
+
+    printk("\nPMM End : ");
+    printk_hex(pmm_bitmap_end());
+
+    printk("\nPMM Size : ");
+    printk_hex(pmm_bitmap_end() - pmm_bitmap_start());
+    printk(" bytes\n");
+
+    unsigned int heap_start = (pmm_bitmap_end() + 0xFFF) & 0xFFFFF000;
+    printk("\nHeap Start : ");
     printk_hex(heap_start);
     printk("\n");
 }

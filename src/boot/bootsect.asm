@@ -31,8 +31,8 @@
 
 KERNEL_OFFSET equ 0x1000 ; The memory address where we will load the Kernel
 
-MEMORY_MAP    equ 0x5000    ; place in RAM to store the memory map we get from the BIOS
-MEMORY_COUNT  equ 0x4FF0
+MEMORY_MAP    equ 0x8000    ; place in RAM to store the memory map we get from the BIOS
+MEMORY_COUNT  equ 0x7FF0
 
 ; Initialize segment registers
 XOR ax, ax

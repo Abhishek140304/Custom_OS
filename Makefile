@@ -47,6 +47,7 @@ OBJS = \
 	$(BUILD_KERNEL)/commands.o \
 	$(BUILD_KERNEL)/memory_info.o \
 	$(BUILD_KERNEL)/e280.o \
+	$(BUILD_KERNEL)/pmm.o \
 	$(BUILD_LIB)/string.o
 
 # The default target
@@ -120,6 +121,9 @@ $(BUILD_KERNEL)/memory_info.o: $(MEMORY_DIR)/memory_info.c | dirs
 	$(CC) $(CFLAGS) $< -o $@
 
 $(BUILD_KERNEL)/e280.o: $(MEMORY_DIR)/e280.c | dirs
+	$(CC) $(CFLAGS) $< -o $@
+
+$(BUILD_KERNEL)/pmm.o: $(MEMORY_DIR)/pmm.c | dirs
 	$(CC) $(CFLAGS) $< -o $@
 
 $(BUILD_LIB)/string.o: $(LIB_DIR)/string.c | dirs

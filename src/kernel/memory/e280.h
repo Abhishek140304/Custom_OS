@@ -5,6 +5,9 @@ Defines the structure for the BIOS E820 memory map. This allows our C kernel to 
 #ifndef E280_H
 #define E280_H
 
+#define MEMORY_COUNT_ADDR 0x7FF0
+#define MEMORY_MAP_ADDR 0x8000
+
 // single 24-byte entry in the memory map
 typedef struct {
     unsigned long long base;
