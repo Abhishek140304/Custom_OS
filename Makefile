@@ -49,6 +49,8 @@ OBJS = \
 	$(BUILD_KERNEL)/e820.o \
 	$(BUILD_KERNEL)/pmm.o \
 	$(BUILD_KERNEL)/heap.o \
+	$(BUILD_KERNEL)/paging.o \
+	$(BUILD_KERNEL)/page_fault.o \
 	$(BUILD_LIB)/string.o
 
 # The default target
@@ -128,6 +130,12 @@ $(BUILD_KERNEL)/pmm.o: $(MEMORY_DIR)/pmm.c | dirs
 	$(CC) $(CFLAGS) $< -o $@
 
 $(BUILD_KERNEL)/heap.o: $(MEMORY_DIR)/heap.c | dirs
+	$(CC) $(CFLAGS) $< -o $@
+
+$(BUILD_KERNEL)/paging.o: $(MEMORY_DIR)/paging.c | dirs
+	$(CC) $(CFLAGS) $< -o $@
+
+$(BUILD_KERNEL)/page_fault.o: $(MEMORY_DIR)/page_fault.c | dirs
 	$(CC) $(CFLAGS) $< -o $@
 
 $(BUILD_LIB)/string.o: $(LIB_DIR)/string.c | dirs

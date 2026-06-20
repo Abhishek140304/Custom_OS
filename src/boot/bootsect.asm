@@ -31,7 +31,7 @@
 
 KERNEL_OFFSET equ 0x1000 ; The memory address where we will load the Kernel
 
-%define KERNEL_SECTORS 35   ; Number of sectors to load for kernel
+%define KERNEL_SECTORS 50   ; Number of sectors to load for kernel
 
 MEMORY_MAP    equ 0x8000    ; place in RAM to store the memory map we get from the BIOS
 MEMORY_COUNT  equ 0x7FF0

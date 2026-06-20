@@ -13,6 +13,7 @@ Description: The main C entry point for the operating system. It initializes cor
 #include "./shell/shell.h"
 #include "./memory/pmm.h"
 #include "./memory/heap.h"
+#include "./memory/paging.h"
 
 void kernel_main() {
 
@@ -35,6 +36,9 @@ void kernel_main() {
 
     // printk("Initializing Physical Memory Map");
     pmm_init();
+
+    // printk("Initializing Paging");
+    paging_init();
 
     // printk("Initializing Heap");
     heap_init();

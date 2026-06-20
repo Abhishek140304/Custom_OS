@@ -56,6 +56,7 @@ void isr_handler(registers_t* regs){
 
     if(interrupt_handlers[regs->int_no]){
         interrupt_handlers[regs->int_no](regs);
+        return;
     }
 
 
