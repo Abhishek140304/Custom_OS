@@ -2,7 +2,7 @@
 CC = gcc
 CFLAGS = -m32 -ffreestanding -fno-pie -c
 LD = ld
-LDFLAGS = -m elf_i386 -T linker.ld --oformat binary
+LDFLAGS = -m elf_i386 -T linker.ld
 
 # Source Directories
 BOOT_DIR = src/boot
@@ -143,8 +143,11 @@ $(BUILD_LIB)/string.o: $(LIB_DIR)/string.c | dirs
 
 
 # Kernel Linking
-$(BUILD_DIR)/kernel.bin: $(OBJS)
+$(BUILD_DIR)/kernel.elf: $(OBJS)
 	$(LD) $(LDFLAGS) $^ -o $@
+
+$(BUILD_DIR)/kernel.bin: $(BUILD_DIR)/kernel.elf
+	objcopy -O binary $< $@
 
 # OS Imae
 $(BUILD_DIR)/os_image.bin: $(BUILD_DIR)/bootsect.bin $(BUILD_DIR)/kernel.bin

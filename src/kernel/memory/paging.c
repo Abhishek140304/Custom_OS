@@ -6,6 +6,8 @@ Description: Implements x86 32-bit Virtual Memory. It builds the Page Directory 
 #include "pmm.h"
 #include "page_fault.h"
 
+#define KERNEL_VIRTUAL_BASE 0xC0000000
+
 typedef unsigned int page_dir_entry_t;
 typedef unsigned int page_table_entry_t;
 
@@ -135,13 +137,34 @@ void paging_unmap_page(unsigned int virtual_addr){
     );
 }
 
+void paging_map_kernel_high(){
+    extern char kernel_start;
+    extern char kernel_end;
+
+    unsigned int kernel_phys = (unsigned int)&kernel_start;
+
+    unsigned int kernel_size = (unsigned int)&kernel_end - (unsigned int)&kernel_start;
+   
+    paging_map_range(KERNEL_VIRTUAL_BASE, kernel_phys, kernel_size, PAGE_WRITABLE);
+}
+
+void paging_map_range(unsigned int virt, unsigned int phys, unsigned int size, unsigned int flags){
+    unsigned int pages = (size + 0xFFF) / 0x1000;
+
+    for(unsigned int i=0; i<pages; i++){
+        paging_map_page(virt + i * 0x1000, phys + i * 0x1000, flags);
+    }
+}
+
 void paging_init(){
     paging_setup_first_table();
     paging_setup_directory();
 
+    paging_map_kernel_high();
+    
+    page_fault_init();
+
     load_page_directory(kernel_directory);
     enable_paging();
-
-    page_fault_init();
 
 }
